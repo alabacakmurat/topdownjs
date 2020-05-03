@@ -1,3 +1,10 @@
+/**
+ * TopdownJS is a product of [MA]Lab <muratalabacak.com
+ * 
+ * You can find the full documentation here:
+ *		http://workspace.muratalabacak.com/topdownjs/
+ */
+
 let $$topdown;
 window.$$topdown = $$topdown = {
 	// options
@@ -11,100 +18,56 @@ window.$$topdown = $$topdown = {
 		if( Array.isArray(opt) || !(typeof opt == 'object') ) return;
 		
 		// pixels
-		this.pixels 	= opt.pixels || 10;
+		this.pixels 			= opt.pixels || 10;
 
-		// language
-		this.lang 		= opt.lang || 'en';
+		// no buttons
+		if( typeof opt.buttons != 'object' ) opt.buttons = {};
 
-		// langkeys
-		if( typeof opt.langkeys == 'object' )
-			this.langkeys = {...this.langkeys, ...opt.langkeys};
+		// dismiss-cancel
+		opt.buttons.cancel 	= !!opt.buttons ? (opt.buttons.cancel || this.defaultButtons.cancel) : this.defaultButtons.cancel;
+		opt.buttons.dismiss 	= !!opt.buttons ? (opt.buttons.dismiss || this.defaultButtons.dismiss) : this.defaultButtons.dismiss;
+		opt.buttons.confirm 	= !!opt.buttons ? (opt.buttons.confirm || this.defaultButtons.confirm) : this.defaultButtons.confirm;
+
+		// merge
+		this.defaultButtons = {...this.defaultButtons, ...opt.buttons};
+
+		// titles
+		if( typeof opt.titles == 'object' )
+			this.titles = {...this.titles, ...opt.titles};
+
+		// states
+		if( typeof opt.states == 'object' )
+			this.globalStates = {...this.globalStates, ...opt.states};
 	},
 
 	// how many pixels will be added/remove each refresh?
 	'pixels': 10,
 
-	// setters
-	'lang': 'en',
-
-	// language keys
-	'langkeys': {
-		'en': {
-			'titles': {
-				'success': 	'SUCCESS',
-				'error': 	'ERROR',
-				'warning': 	'WARNING',
-				'info': 	'INFORMATION',
-				'confirm': 	'CONFIRM',
-			},
-			'buttons': {
-				'dismiss': 	'Close',
-				'cancel': 	'Cancel',
-				'confirm': 	'Confirm',
-			}
-		},
-		'tr': {
-			'titles': {
-				'success': 	'BAŞARI',
-				// 'error': 	'HATA',
-				'warning': 	'UYARI',
-				'info': 	'BİLGİ',
-				'confirm': 	'ONAYLA',
-			},
-			'buttons': {
-				'dismiss': 	'Kapat',
-				'cancel': 	'Vazgeç',
-				'confirm': 	'Onayla',
-			}
-		}
+	// titles
+	'titles': {
+		'success': 	'SUCCESS',
+		'error': 	'ERROR',
+		'warning': 	'WARNING',
+		'info': 	'INFORMATION',
+		'confirm': 	'CONFIRM',
 	},
 
-	// langkey get
-	_lang(key, def, langid) {
-		if( !langid ) langid = this.lang;
-		if( !this.langkeys[langid] ) langid = 'en';
-		
-		var langkeys = this.langkeys[langid];
-		
-		// split by '.'
-		if( key.includes('.') )
-			key = key.split('.')
-
-		// def
-		if( !def )
-			def = this._lang(key, key, 'en')
-		if( !def && Array.isArray(key) )
-			def = key.join('.')
-
-		//
-		if( Array.isArray(key) )
-		{
-			for(var i=0; i<key.length; i++)
-			{
-				if( typeof langkeys == 'object' && !!(langkeys[key[i]]) )
-					langkeys = langkeys[key[i]]
-				else
-					langkeys = def
-			}
-
-			return langkeys;
-		} else if( !!key ) {
-			return !!(langkeys[key]) ? langkeys[key] : def;
-		} else {
-			return langkeys;
-		}
+	// Default buttons
+	'defaultButtons': {
+		'dismiss': '<button type="button" topdown:dismiss>Kapat</button>',
+		'cancel': '<button type="button" topdown:dismiss>Vazgeç</button>',
+		'confirm': '<button type="button" topdown:dismiss>Onayla</button>',
 	},
 
 	// global states
-	'states': {
+	'globalStates': {
 		'shown': null,
 		'hidden': null,
 	},
 
 	// when(..)
 	when(state, fn) {
-		if( this.isFunction(fn) )
-			this.states[state] = fn;
+		this.globalStates[state] = fn;
 	},
 
 	// Nodes
@@ -121,29 +84,55 @@ window.$$topdown = $$topdown = {
 		return document.querySelector('div[id="__topdown_container"]>div._topdown_wrapper');
 	},
 	get wrapper() { return this._wrapper(); },
-	_title(html) {
+	_title(_html) {
+		var html = _html || '';
 		this.construct();
 		var title = this._wrapper().querySelector('div._topdown_heading>._topdown_title');
-		if( !!html ) title.innerHTML = Array.isArray(html) ? html.join('') : html;
+		if(html !== '') title.innerHTML = Array.isArray(html) ? html.join('') : html;
 		return title;
 	},
 	get titleElement() { return this._titleElement(); },
 	set title(title) { return this._title(title); },
-	_body(html) {
+	_body(_html) {
+		var html = _html || '';
 		this.construct();
 		var body = this._wrapper().querySelector('div._topdown_body');
-		if( !!html ) body.innerHTML = Array.isArray(html) ? html.join('') : html;
+		if(html !== '')  body.innerHTML = Array.isArray(html) ? html.join('') : html;
 		return body;
 	},
 	get bodyElement() { return this._bodyElement(); },
 	set body(body) { return this._body(body); },
 	set content(body) { return this._body(body); },
 	set text(body) { return this._body(body); },
-	_buttons(html) {
+	_buttons(_html) {
+		var html = _html || '';
+		
 		this.construct();
-		var footer = this._wrapper().querySelector('div._topdown_footer');
-		if( !!html ) footer.innerHTML = Array.isArray(html) ? html.join('') : html;
+		var footer = this._wrapper().querySelector('div._topdown_footer'),
+			exposable = document.createElement('div');
+		if( Array.isArray(html) )
+		{
+			html.forEach(button => {
+				if( this.isDOMElement(button) == 'object') {
+					exposable.appendChild(button)
+				} else if( typeof button == 'object')
+				{
+					var _button = document.createElement('button');
+						_button.type = 'submit';
+						_button.className = button.className || '';
+						_button.innerHTML = button.text || 'Button';
 
+					if( this.isFunction((button.onclick||null)) )
+						_button.addEventListener('click', button.onclick);
+
+					exposable.appendChild(_button)
+				} else {
+					exposable.appendChild(this.createElementFromHTML(button))
+				}
+			});
+			footer.innerHTML = '';
+			footer.appendChild(exposable);
+		}
 		return footer;
 	},
 	set buttons(html) { return this._buttons(html); },
@@ -195,7 +184,7 @@ window.$$topdown = $$topdown = {
 			container.className = 'force';
 			body.prepend(container);
 
-			container.innerHTML = '<div class="_topdown_wrapper"><div class="_topdown_heading"><a class="_topdown_dismiss" topdown:dismiss>&times;</a><div class="_topdown_title">Topdown</div></div><div class="_topdown_body">Topdown body</div><div class="_topdown_footer">Buttons</div></div>'
+			container.innerHTML = '<div class="_topdown_wrapper"><div class="_topdown_heading"><a class="_topdown_dismiss" topdown:dismiss>&times;</a><div class="_topdown_title"></div></div><div class="_topdown_body"></div><div class="_topdown_footer"></div></div>'
 
 			// We'll need to add a listener for that
 			this.centralize();
@@ -221,7 +210,7 @@ window.$$topdown = $$topdown = {
 	// Displayer
 	display(what, body, buttons, states, hidden) {
 		this.construct();
-		
+
 		// states
 		var stateShown, stateHidden;
 		
@@ -237,11 +226,11 @@ window.$$topdown = $$topdown = {
 
 		var displayfn = () => {
 			// do we have a title?
-			var title = this._lang('titles.' + what),
+			var title = (this.titles[what] || what),
 				content = '';
 			if( Array.isArray(body) )
 			{
-				title = body.shift() || this._lang('titles.' + what);
+				title = body.shift() || (this.titles[what] || what);
 				content = body.shift() || '';
 			} else if( typeof body == 'object' )
 			{
@@ -251,44 +240,27 @@ window.$$topdown = $$topdown = {
 			}
 
 			// parse the buttons
-			var buttonsParsed = [];
+			var buttonsParsed = [], clickEvents = [];
 			if( Array.isArray(buttons) )
 			{
 				buttons.forEach((btn) => {
-					if( !Array.isArray(btn) && typeof btn == "object" )
-					{
-						var {text, onclick, className} = btn;
-						var button = document.createElement('button');
-						button.type = 'button';
-						button.className = (Array.isArray(className) ? className.join(' ') : (className || 'button btn btn-dark is-dark dark'));
-						button.innerHTML = text;
+					if( !!this.defaultButtons[btn] ) {
+						buttonsParsed.push(this.defaultButtons[btn]);
 
-						// listener
-						if( typeof onclick == "function" )
-						{
-							button.addEventListener('click', onclick);
-						}
-
-						// Push
-						buttonsParsed.push( button.outerHTML );
-					} else if( btn == 'dismiss' ) {
-						buttonsParsed.push(`<button type="button" class="btn btn-sm is-small small btn-danger button is-danger error danger alert red" topdown:dismiss>${this._lang('buttons.dismiss')}</button>`)
-					} else if( btn == 'cancel' ) {
-						buttonsParsed.push(`<button type="button" class="btn btn-sm is-small small btn-danger button is-danger error danger alert red" topdown:dismiss>${this._lang('buttons.cancel')}</button>`)
 					} else {
-						buttonsParsed.push(btn)
+						buttonsParsed.push(btn);
 					}
 				})
+			} else if( !!this.defaultButtons[buttons] ) {
+				buttonsParsed = this.defaultButtons[buttons];
 			} else if( !!buttons ) {
-				buttonsParsed = buttons;
-			} else if( buttons == undefined ) {
-				buttonsParsed = `<button type="button" class="btn btn-sm is-small small btn-danger button is-danger error danger alert red" topdown:dismiss>${this._lang('buttons.dismiss')}</button>`;
+				buttonsParsed = this.defaultButtons[buttons] || buttons;
 			}
 
 			this._container().className = 'force ' + what;
 			this._title( title );
 			this._body( content );
-			this._buttons( buttonsParsed );
+			this._buttons( buttonsParsed, clickEvents );
 
 			// clickers
 			this._container().querySelectorAll('[topdown\\:dismiss]').forEach((el) => {
@@ -297,9 +269,14 @@ window.$$topdown = $$topdown = {
 				})
 			})
 
+
 			// focus on the dismiss button
 			var qd = this._buttons().querySelector('[topdown\\:dismiss]');
 			if( !!qd ) qd.focus();
+
+			// focus on the last button
+			var ql = this._buttons().querySelector('*:last-child');
+			if( !qd && !!ql ) ql.focus();
 
 			// centralize
 			this.centralize();
@@ -329,7 +306,7 @@ window.$$topdown = $$topdown = {
 			
 			this.isFunction(done) ? done() : null;
 			
-			this.isFunction(this.states.shown) ? this.states.shown() : null;
+			this.isFunction(this.globalStates.shown) ? this.globalStates.shown() : null;
 		};
 
 		// show or hide-first
@@ -353,7 +330,7 @@ window.$$topdown = $$topdown = {
 
 				this.isFunction(done) ? done() : null;
 				
-				this.isFunction(this.states.hidden) ? this.states.hidden() : null;
+				this.isFunction(this.globalStates.hidden) ? this.globalStates.hidden() : null;
 			});
 		};
 
@@ -365,6 +342,7 @@ window.$$topdown = $$topdown = {
 		}
 
 	},
+	dismiss(...props) { return this.hide(...props); },
 	isHidden() {
 		return !this.isShown();
 	},
@@ -411,18 +389,18 @@ window.$$topdown = $$topdown = {
 
 	// CSS
 	_styleTag() {
-		return '#__topdown_container{position:fixed;top:0;min-width:500px;max-width:600px;background:#f3b7bd;border-color:#e4606d;-webkit-box-shadow:0 0 5px 2px rgba(220,53,69,0.2);box-shadow:0 0 5px 2px rgba(220,53,69,0.2);border-width:1px;border-style:solid;border-top:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;z-index:999;margin:0 auto}#__topdown_container.error{background:#f3b7bd;border-color:#e4606d;-webkit-box-shadow:0 0 5px 2px rgba(220,53,69,0.2);box-shadow:0 0 5px 2px rgba(220,53,69,0.2)}#__topdown_container.warning{background:#ffe7a0;border-color:#ffce3a;-webkit-box-shadow:0 0 5px 2px rgba(255,193,7,0.2);box-shadow:0 0 5px 2px rgba(255,193,7,0.2)}#__topdown_container.success{background:#86e29b;border-color:#34ce57;-webkit-box-shadow:0 0 5px 2px rgba(40,167,69,0.2);box-shadow:0 0 5px 2px rgba(40,167,69,0.2)}#__topdown_container.info{background:#99caff;border-color:#3395ff;-webkit-box-shadow:0 0 5px 2px rgba(0,123,255,0.2);box-shadow:0 0 5px 2px rgba(0,123,255,0.2)}#__topdown_container ._topdown_wrapper{padding:1rem 1.8rem}#__topdown_container ._topdown_heading{display:flex}#__topdown_container ._topdown_heading ._topdown_title{flex-grow:1;font-size:120%;letter-spacing:2px;font-weight:700;text-transform:uppercase}#__topdown_container a._topdown_dismiss{cursor:pointer;padding:.6rem 1rem;position:absolute;top:0;right:0;}a._topdown_dismiss{color:inherit;text-decoration:none;}#__topdown_container ._topdown_body{margin:5px 0}#__topdown_container ._topdown_footer{text-align:right}#__topdown_container ._topdown_footer a,#__topdown_container ._topdown_footer button{margin-left:5px}';
+		return '#__topdown_container{position:fixed;top:0;min-width:500px;max-width:600px;background:#f3b7bd;border-color:#e4606d;-webkit-box-shadow:0 0 5px 2px rgba(220,53,69,0.2);box-shadow:0 0 5px 2px rgba(220,53,69,0.2);border-width:1px;border-style:solid;border-top:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;z-index:999;margin:0 auto}#__topdown_container.error{background:#f3b7bd;border-color:#e4606d;-webkit-box-shadow:0 0 5px 2px rgba(220,53,69,0.2);box-shadow:0 0 5px 2px rgba(220,53,69,0.2)}#__topdown_container.warning{background:#ffe7a0;border-color:#ffce3a;-webkit-box-shadow:0 0 5px 2px rgba(255,193,7,0.2);box-shadow:0 0 5px 2px rgba(255,193,7,0.2)}#__topdown_container.success{background:#86e29b;border-color:#34ce57;-webkit-box-shadow:0 0 5px 2px rgba(40,167,69,0.2);box-shadow:0 0 5px 2px rgba(40,167,69,0.2)}#__topdown_container.info{background:#99caff;border-color:#3395ff;-webkit-box-shadow:0 0 5px 2px rgba(0,123,255,0.2);box-shadow:0 0 5px 2px rgba(0,123,255,0.2)}#__topdown_container ._topdown_wrapper{padding:1rem 1.8rem}#__topdown_container ._topdown_heading{display:flex}#__topdown_container ._topdown_heading ._topdown_title{flex-grow:1;font-size:120%;letter-spacing:2px;font-weight:700;text-transform:uppercase}#__topdown_container a._topdown_dismiss{cursor:pointer;padding:.6rem 1rem;position:absolute;top:0;right:0;}a._topdown_dismiss{color:inherit;text-decoration:none;}#__topdown_container ._topdown_body{margin:5px 0}#__topdown_container ._topdown_footer{text-align:right}#__topdown_container ._topdown_footer a,#__topdown_container ._topdown_footer button{margin:0 0 0 5px}';
 	},
 
 	// Styler
 	getStyle(el, cssRule) {
 		var value = "";
-		if(document.defaultView && document.defaultView.getComputedStyle){
-			value = document.defaultView.getComputedStyle(el, "").getPropertyValue(cssRule);
-		}
-		else if(el.currentStyle)
+		if(document.defaultView && document.defaultView.getComputedStyle)
 		{
-			cssRule = cssRule.replace(/\-(\w)/g, function (strMatch, p1){
+			value = document.defaultView.getComputedStyle(el, "").getPropertyValue(cssRule);
+		} else if(el.currentStyle)
+		{
+			cssRule = cssRule.replace(/\-(\w)/g, (strMatch, p1) => {
 				return p1.toUpperCase();
 			});
 			value = el.currentStyle[cssRule];
@@ -434,4 +412,23 @@ window.$$topdown = $$topdown = {
 	isFunction(fn) {
 		return fn && {}.toString.call(fn) === '[object Function]';
 	},
+
+	createElementFromHTML(htmlString) {
+		var div = document.createElement('div');
+		div.innerHTML = htmlString.trim();
+
+		// Change this to div.childNodes to support multiple top-level nodes
+		return div.firstChild; 
+	},
+
+	isDOMElement(obj) {
+		try {
+			return obj instanceof HTMLElement;
+		}
+		catch(e){
+			return (typeof obj==="object") &&
+				(obj.nodeType===1) && (typeof obj.style === "object") &&
+				(typeof obj.ownerDocument ==="object");
+		}
+	}
 };
