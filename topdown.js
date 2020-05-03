@@ -7,6 +7,8 @@
 
 let $$topdown;
 window.$$topdown = $$topdown = {
+	'version': 0.51,
+
 	// options
 	options(opt, val) {
 		if( !!val && !(typeof opt == 'object') ) {
@@ -110,6 +112,7 @@ window.$$topdown = $$topdown = {
 		this.construct();
 		var footer = this._wrapper().querySelector('div._topdown_footer'),
 			exposable = document.createElement('div');
+
 		if( Array.isArray(html) )
 		{
 			html.forEach(button => {
@@ -130,6 +133,7 @@ window.$$topdown = $$topdown = {
 					exposable.appendChild(this.createElementFromHTML(button))
 				}
 			});
+
 			footer.innerHTML = '';
 			footer.appendChild(exposable);
 		}
@@ -252,9 +256,9 @@ window.$$topdown = $$topdown = {
 					}
 				})
 			} else if( !!this.defaultButtons[buttons] ) {
-				buttonsParsed = this.defaultButtons[buttons];
+				buttonsParsed = [this.defaultButtons[buttons]];
 			} else if( !!buttons ) {
-				buttonsParsed = this.defaultButtons[buttons] || buttons;
+				buttonsParsed = [this.defaultButtons[buttons] || buttons];
 			}
 
 			this._container().className = 'force ' + what;
