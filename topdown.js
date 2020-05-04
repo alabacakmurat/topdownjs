@@ -1,13 +1,13 @@
 /**
  * TopdownJS is a product of [MA]Lab <muratalabacak.com
+ * 	v0.6
  * 
  * You can find the full documentation here:
  *		http://workspace.muratalabacak.com/topdownjs/
  */
-
 let $$topdown;
 window.$$topdown = $$topdown = {
-	'version': 0.51,
+	'version': 0.6,
 
 	// options
 	options(opt, val) {
@@ -26,12 +26,18 @@ window.$$topdown = $$topdown = {
 		if( typeof opt.buttons != 'object' ) opt.buttons = {};
 
 		// dismiss-cancel
-		opt.buttons.cancel 	= !!opt.buttons ? (opt.buttons.cancel || this.defaultButtons.cancel) : this.defaultButtons.cancel;
-		opt.buttons.dismiss 	= !!opt.buttons ? (opt.buttons.dismiss || this.defaultButtons.dismiss) : this.defaultButtons.dismiss;
-		opt.buttons.confirm 	= !!opt.buttons ? (opt.buttons.confirm || this.defaultButtons.confirm) : this.defaultButtons.confirm;
+		opt.buttons.cancel 		= !!opt.buttons ? (opt.buttons.cancel || this.globalButtons.cancel) : this.globalButtons.cancel;
+		opt.buttons.dismiss 	= !!opt.buttons ? (opt.buttons.dismiss || this.globalButtons.dismiss) : this.globalButtons.dismiss;
+		opt.buttons.confirm 	= !!opt.buttons ? (opt.buttons.confirm || this.globalButtons.confirm) : this.globalButtons.confirm;
 
 		// merge
-		this.defaultButtons = {...this.defaultButtons, ...opt.buttons};
+		this.globalButtons = {...this.globalButtons, ...opt.buttons};
+
+		// merge
+		if( Array.isArray(opt.fallbackButtons) )
+			this.fallbackButtons = opt.fallbackButtons;
+		else if( !!opt.fallbackButtons )
+			this.fallbackButtons = [opt.fallbackButtons];
 
 		// titles
 		if( typeof opt.titles == 'object' )
@@ -54,11 +60,16 @@ window.$$topdown = $$topdown = {
 		'confirm': 	'CONFIRM',
 	},
 
+	// Buttons fallback
+	'fallbackButtons': [
+		'dismiss'
+	],
+
 	// Default buttons
-	'defaultButtons': {
-		'dismiss': '<button type="button" topdown:dismiss>Kapat</button>',
-		'cancel': '<button type="button" topdown:dismiss>Vazgeç</button>',
-		'confirm': '<button type="button" topdown:dismiss>Onayla</button>',
+	'globalButtons': {
+		'dismiss': '<button type="button" topdown:dismiss>Close</button>',
+		'cancel': '<button type="button" topdown:dismiss>Cancel</button>',
+		'confirm': '<button type="button" topdown:dismiss>Confirm</button>',
 	},
 
 	// global states
@@ -106,37 +117,29 @@ window.$$topdown = $$topdown = {
 	set body(body) { return this._body(body); },
 	set content(body) { return this._body(body); },
 	set text(body) { return this._body(body); },
-	_buttons(_html) {
-		var html = _html || '';
-		
+
+	_buttons(_html, set_buttons) {
+		var html = set_buttons === true ? (_html || this.fallbackButtons) : false;
+
 		this.construct();
 		var footer = this._wrapper().querySelector('div._topdown_footer'),
 			exposable = document.createElement('div');
 
-		if( Array.isArray(html) )
+		if( html !== false )
 		{
-			html.forEach(button => {
-				if( this.isDOMElement(button) == 'object') {
-					exposable.appendChild(button)
-				} else if( typeof button == 'object')
-				{
-					var _button = document.createElement('button');
-						_button.type = 'submit';
-						_button.className = button.className || '';
-						_button.innerHTML = button.text || 'Button';
+			var parsed = this.parseButtons( html );
+			if( Array.isArray(parsed) )
+			{
+				parsed.forEach(button => {
+					exposable.appendChild( button );
+				});
 
-					if( this.isFunction((button.onclick||null)) )
-						_button.addEventListener('click', button.onclick);
-
-					exposable.appendChild(_button)
-				} else {
-					exposable.appendChild(this.createElementFromHTML(button))
-				}
-			});
-
-			footer.innerHTML = '';
-			footer.appendChild(exposable);
+				footer.innerHTML = '';
+				footer.appendChild(exposable);
+			}
 		}
+
+
 		return footer;
 	},
 	set buttons(html) { return this._buttons(html); },
@@ -243,36 +246,17 @@ window.$$topdown = $$topdown = {
 				content = body;
 			}
 
-			// parse the buttons
-			var buttonsParsed = [], clickEvents = [];
-			if( Array.isArray(buttons) )
-			{
-				buttons.forEach((btn) => {
-					if( !!this.defaultButtons[btn] ) {
-						buttonsParsed.push(this.defaultButtons[btn]);
-
-					} else {
-						buttonsParsed.push(btn);
-					}
-				})
-			} else if( !!this.defaultButtons[buttons] ) {
-				buttonsParsed = [this.defaultButtons[buttons]];
-			} else if( !!buttons ) {
-				buttonsParsed = [this.defaultButtons[buttons] || buttons];
-			}
-
 			this._container().className = 'force ' + what;
 			this._title( title );
 			this._body( content );
-			this._buttons( buttonsParsed, clickEvents );
+			this._buttons( buttons, true );
 
 			// clickers
 			this._container().querySelectorAll('[topdown\\:dismiss]').forEach((el) => {
 				el.addEventListener('click', () => {
 					this.hide( stateHidden );
 				})
-			})
-
+			});
 
 			// focus on the dismiss button
 			var qd = this._buttons().querySelector('[topdown\\:dismiss]');
@@ -433,6 +417,61 @@ window.$$topdown = $$topdown = {
 			return (typeof obj==="object") &&
 				(obj.nodeType===1) && (typeof obj.style === "object") &&
 				(typeof obj.ownerDocument ==="object");
+		}
+	},
+
+	/**
+	 * We have these values for buttons
+	 *
+	 *		'button HTML'
+	 *		['button HTML']
+	 *		{text: 'Object creator for button'}
+	 *		[{text: 'Object creator for button'}]
+	 *		['HTML', {text: 'Object creator for button'}]
+	 *		['HTML', 'global-button-name', {text: 'Object creator for button'}]
+	 *		['HTML', document.getElementsByTagName('button')[0], {text: 'Object creator for button'}]
+	 */
+	parseButtons(buttons) {
+		// Is this already a dom element?
+		if( this.isDOMElement(buttons) )
+		{
+			return [buttons];
+
+		// Is this an object?
+		} else if( typeof buttons == 'object' && buttons.constructor.name == 'Object' )
+		{
+			var button = buttons,
+				_button = document.createElement('button');
+				_button.type 		= 'button';
+				_button.className 	= button.className || '';
+				_button.innerHTML 	= button.text || 'Button';
+
+			if( this.isFunction((button.onclick||null)) )
+				_button.addEventListener('click', button.onclick);
+
+			return [ _button ];
+
+		// do we have it directly in the global buttons?
+		} else if( !!this.globalButtons[buttons] ) {
+			return this.parseButtons( this.globalButtons[buttons] );
+		
+		// Is this a set of buttons?
+		} else if( Array.isArray(buttons) )
+		{
+			var parsed = [];
+			buttons.forEach(button => {
+				parsed[parsed.length] = this.parseButtons( button ).shift();
+			});
+			return parsed;
+		
+		// Directly a html?
+		} else if( !!buttons )
+		{
+			return [ this.createElementFromHTML(buttons) ];
+
+		// Safe return
+		} else {
+			return [];
 		}
 	}
 };

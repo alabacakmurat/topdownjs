@@ -2,50 +2,210 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>TopdownJS</title>
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"> -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.2/styles/monokai-sublime.min.css">
+	<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15/dist/smooth-scroll.polyfills.min.js"></script>
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.2/highlight.min.js"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
 
 
 	<style>
+		* { box-sizing: border-box; }
 		body {
 			background: #F5F5F5;
-			padding-bottom: 80px;
+			overflow-x: hidden;
 		}
 		button {
 			margin: 3px 0;
 		}
-		.box-vip {
-			/*width: 70vw;*/
-			min-width: 400px;
-			min-height: 70vh;
-			min-height: auto;
-			border: 1px solid #DDD;
-			border-radius: 0.4rem;
-			margin: 40px auto;
-			/*display: flex;*/
-			align-self: center;
-			background: #FFF;
-			padding: 2rem;
-		}
 		h1, h2 {
 			margin: 0 0 2rem 0;
 		}
+		.title {
+			padding-top: 20px;
+		}
+
 		code {
 			/*user-select: all;*/
 		}
+
+
+		#sidebar .nav {
+			display: flex;
+			flex-direction: column;
+		}
+		#sidebar .nav a {
+			display: block;
+			padding: 0.8rem 1.4rem;
+			color: #222;
+			text-decoration: none;
+		}
+		#sidebar .nav a:hover {
+			background: #F5F5F5; /*#fff * 3.8*/
+		}
+		#sidebar .nav a:active {
+			background: #F0F0F0; /*#fff * 5.6*/
+		}
+		#sidebar .nav a.active {
+			/*background: #fcbd00;*/
+			background: #eee;
+			font-weight: bold;
+		}
+		#sidebar .nav a.active:hover {
+			/*background: #FFC107;*/
+			background: #E5E5E5;
+		}
+		#sidebar .nav a.active:active {
+			/*background: #f7b900;*/
+			background: #e0e0e0;
+		}
+
+
+		#sidebar-wrapper {
+			min-height: 100vh;
+			margin-left: -17rem;
+			width: 17rem;
+			-webkit-transition: margin .25s ease-out;
+			-moz-transition: margin .25s ease-out;
+			-o-transition: margin .25s ease-out;
+			transition: margin .25s ease-out;
+			background: #FFF;
+			border-right: 1px solid #AAA;
+		}
+
+		#sidebar {
+			position: sticky;
+			top: 0;
+			width: 17rem;
+			max-height: 100vh;
+			overflow-y: auto;
+			border-right: 1px solid #AAA;
+			padding: 2rem 0;
+		}
+
+		#sidebar .header {
+			font-weight: bold;
+			text-align: center;
+			font-size: 1.4em;
+			margin: 0;
+			margin-bottom: 1rem;
+			padding: 0;
+		}
+
+		#page-content {
+			padding: 0 2rem;
+			width 100vw;
+		}
+
+		#brand_on_xs {
+			display: inline-block;
+		}
+		@media (min-width: 768px) {
+			#sidebar-wrapper {
+				margin-left: 0;
+			}
+
+			#page-content-wrapper {
+				min-width: 0;
+				width: 100%;
+			}
+
+			#brand_on_xs {
+				display: none;
+			}
+		}
+
 	</style>
 	<script src="topdown.min.js"></script>
+	<script>
+		window.onload = () => {
+			let smoothScroll = new SmoothScroll('a[href*="#"]', {
+				speed: 500,
+				speedAsDuration: true,
+				// easing: 'easeOutQuint'
+			});
+
+			let sidebarLinks = document.querySelectorAll('#sidebar .nav a');
+			let sidebarOffsets = [];
+			sidebarLinks.forEach(a => {
+				// set the offsets
+				let targetId = a.getAttribute('href').slice(1),
+					target = document.getElementById(targetId);
+
+				if( !!target )
+				{
+					a.dataset.offset = target.offsetTop;
+					sidebarOffsets.unshift([target.offsetTop, a, target]);
+				}
+			});
+
+			let whatsInRange = (e) => {
+				let scroll = document.scrollingElement.scrollTop;
+				
+				sidebarOffsets.some(data => {
+					[offset, link, target] = data;
+
+					if( scroll >= (offset-50) )
+					{
+						setActiveLink(link)
+						return true;
+					}
+				})
+			};
+
+			let setActiveLink = (node) => {
+				document.querySelectorAll('#sidebar .nav a.active').forEach(active => {
+					active.classList.remove('active');
+				});
+				node.classList.add('active');
+			};
+			
+			// scroll activity
+			window.addEventListener('scroll', () => { whatsInRange(); });
+			whatsInRange();
+		}
+
+
+	</script>
 </head>
 <body>
-	<div class="box-vip container">
-		<h1 class="title">
+<div class="d-flex" id="wrapper">
+	<div id="sidebar-wrapper">
+		<div id="sidebar">
+			<div class="header">
+				TopdownJS
+				<div style="text-align: center; margin-top: 5px; margin-bottom: 10px; font-size: 0.9rem; font-weight: normal;">
+					by <a href="http://muratalabacak.com" target="_blank" class=" font-weight-bold" style="color: #333; text-decoration: none !important"><span style="background-color:#D32F2F;color:#FFF;padding:0 4px">MA</span>Lab</a>
+				</div>
+			</div>
+			<div class="nav">
+				<a href="#usage">Usage</a>
+				<a href="#topdown-classes">1) Topdown classes</a>
+				<a href="#predefined-topdown-classes">1.1) Predefined topdowns</a>
+				<a href="#title-and-content">2) Title & Content</a>
+				<a href="#topdown-buttons">3) Buttons</a>
+				<a href="#events-states">4) Events / States</a>
+				<a href="#options-methods">5) Options & Methods</a>
+				<a href="https://github.com/alabacakmurat/topdownjs" target="_blank">Github</a>
+			</div>
+		</div>
+	</div>
+	<!-- /#sidebar-wrapper -->
+	<div id="page-content-wrapper">
+
+	<div id="page-content">
+
+		<!-- Sidebar -->
+		<h1 class="title" id="usage">
 			TopdownJS
+			<div id="brand_on_xs" style="font-size: 0.9rem; font-weight: normal;">
+				by <a href="http://muratalabacak.com" target="_blank" class=" font-weight-bold" style="color: #333; text-decoration: none !important"><span style="background-color:#D32F2F;color:#FFF;padding:0 4px">MA</span>Lab</a>
+			</div>
 		</h1>
 		<h4 class="title">
 			Usage
@@ -56,7 +216,7 @@
 		</div>
 
 
-		<h4 class="title mt-5">
+		<h4 class="title mt-5" id="topdown-classes">
 			1) Topdown Classes
 		</h4>
 		<div class="ml-5">
@@ -143,7 +303,7 @@ $$topdown.display('custom-class', {'title': 'Title Overridden', 'content': 'Hell
 
 		<!-- SECTION -->
 		<div class="ml-5">
-			<h4 class="title mt-5">
+			<h4 class="title mt-5" id="predefined-topdown-classes">
 				1.A) Predefined Topdown Classes
 			</h4>
 			<div class="ml-5">
@@ -172,7 +332,7 @@ $$topdown.display('custom-class', {'title': 'Title Overridden', 'content': 'Hell
 
 
 		<!-- SECTION -->
-		<h4 class="title mt-5">
+		<h4 class="title mt-5" id="title-and-content">
 			2) Title & Content
 		</h4>
 		<div class="ml-5">
@@ -207,7 +367,7 @@ $$topdown.display('custom-class', {'title': 'My Own Title', 'content': 'My own c
 
 
 		<!-- SECTION -->
-		<h4 class="title mt-5">
+		<h4 class="title mt-5" id="topdown-buttons">
 			3) Buttons
 		</h4>
 		<div class="ml-5">
@@ -231,6 +391,17 @@ $$topdown.display('custom-class', 'Just the content under the global title', 'di
 				<div class="alert alert-warning mt-1">
 					Did you notice <code class="badge badge-danger">topdown:dismiss</code> attribute when defining our global button for 'dismiss' key? It helps dismiss the topdown.
 				</div>
+			</div>
+			<div class="mb-3">
+				And set it for fallback buttons (if no button is given during the call-specific topdown, this will be used)
+			</div>
+			<div class="mb-3">
+				<em class="badge badge-warning">Javascript</em>
+				<pre class="mb-0"><code class="language-javascript">$$topdown.options('fallbackButtons', ['dismiss'])
+
+// I didn't set the dismiss button yet it will show up
+$$topdown.display('custom-class', 'Just the content under the global title')</code></pre>
+				<button onclick="$$topdown.options('fallbackButtons', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>']);$$topdown.display('custom-class-styled', 'Just the content under the global title with a fallback button')">Run code</button>
 			</div>
 			<div class="mb-3">
 				Time to add more buttons. Let's define a custom predefined button with the name of <code>custom-name</code>.
@@ -290,8 +461,8 @@ $$topdown.display('custom-class', 'Just the content under the global title', 'di
 
 
 		<!-- SECTION -->
-		<h4 class="title mt-5">
-			4) Callbacks / States
+		<h4 class="title mt-5" id="events-states">
+			4) Events / States
 		</h4>
 		<div class="ml-5">
 			<div class="mb-3">
@@ -311,7 +482,7 @@ $$topdown.display('custom-class', 'Just the content under the global title', 'di
 				<script>
 					function state1()
 					{
-						$$topdown.display('custom-class-styled', 'Just the content under the global title', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>'], {
+						$$topdown.display('custom-class-styled', 'Just the content under the global title', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>', {
 							'shown': () => {
 								alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
 							},
@@ -385,7 +556,7 @@ $$topdown.display('custom-class', 'Just the content under the global title', 'di
 
 
 		<!-- SECTION -->
-		<h4 class="title mt-5">
+		<h4 class="title mt-5" id="options-methods">
 			5) Options & Methods
 		</h4>
 		<div class="ml-5">
@@ -451,12 +622,13 @@ $$topdown.display('custom-class', 'Just the content under the global title', 'di
 $$topdown.option('pixels', 10)</code></pre>
 					</div>	
 				</div>			
-			</div>
+			</div> 
 		</div>
+		<!-- /SECTION -->
 
+		</div>
+	</div> <!-- /.box-container -->
+</div>
 
-	</div>
-	<div style="text-align: center; margin-top: 5px; margin-bottom: 10px">
-		    This is a product of <a href="http://muratalabacak.com" target="_blank" class=" font-weight-bold" style="color: #333; text-decoration: none !important"><span style="background-color:#D32F2F;color:#FFF;padding:0 4px">MA</span>Lab</a></div>
 </body>
 </html>
