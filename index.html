@@ -1,135 +1,201 @@
-<!DOCTYPE html>
+
+<!--
+-
+-	<ma-tracker:"X(&4x?c*-2@5A">
+-	<ma-project:"TopdownJS">
+-	<ma-project-description:"Modern and stylist topdown message boxes">
+-	<ma-project-url:"http://workspace.muratalabacak.com/topdownjs">
+-
+-	[topdownjs]
+-	This project is completely coded by Murat Alabacak <alabacakm@gmail.com>
+-
+-	All of the code below is completely free for everyone who will contribute to it.
+-	If you are planning to just use it directly (any part of it), I may appreciate some credits
+-	If you have any problems such as not being able to reach the source codes of something,
+-	You can email me anytime and I will gladly help you as long as I'm not overwhelmed. 
+-
+--><!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>TopdownJS</title>
-	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"> -->
+	<title>TopdownJS by Murat ALABACAK</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.2/styles/monokai-sublime.min.css">
-	<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15/dist/smooth-scroll.polyfills.min.js"></script>
-
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.2/highlight.min.js"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
 
-
 	<style>
-		* { box-sizing: border-box; }
-		body {
-			background: #F5F5F5;
-			overflow-x: hidden;
-		}
-		button {
-			margin: 3px 0;
-		}
-		h1, h2 {
-			margin: 0 0 2rem 0;
-		}
-		.title {
-			padding-top: 20px;
-		}
+		html {
+	height: 100%;
+	scroll-behavior: smooth;
+}
+body {
+	background: #F5F5F5;
+	height: 100%;
+	overflow-x: hidden;
+}
 
-		code {
-			/*user-select: all;*/
-		}
+.title {
+	padding-top: 80px;
+}
+
+#navbar {
+	background: #FFF;
+	padding: 0rem 2rem;
+	border-bottom: 1px solid #DDD;
+	height: 60px;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 500;
+}
+
+#navbar #logo {
+	user-select: none;
+	display: flex;
+
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+}
+#navbar #logo .logo-text {
+	flex-grow: 1;
+	justify-content: center;
+	text-align: center;
+	align-self: center;
+}
+#navbar #logo .logo-text small {
+	font-size: 0.8rem;
+}
+#navbar .btn {
+	float: left;
+	flex-shrink: 1;
+}
+
+#main {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+#main #sidebar {
+	top: 60px;
+	max-height: calc(100vh - 60px);
+	width: 17rem;
+	min-width: 17rem;
+	background: #FFF;
+	border-right: 1px solid #DDD;
+	overflow-y: auto;
+	
+	padding-bottom: 2rem;
+	
+	position: fixed;
+	top: 60px;
+	bottom: 0;
+	z-index: 500;
+
+	/* animational margin */
+	-webkit-transition: margin .25s ease-out;
+	-moz-transition: margin .25s ease-out;
+	-o-transition: margin .25s ease-out;
+	transition: margin .25s ease-out;
+
+	/* sidebar-off as default */
+	margin-left: -17rem;
+}
+#main.sidebar-on #sidebar {
+	margin-left: 0rem;
+}
+#main.sidebar-off #sidebar {
+	margin-left: -17rem;
+}
 
 
-		#sidebar .nav {
-			display: flex;
-			flex-direction: column;
-		}
-		#sidebar .nav a {
-			display: block;
-			padding: 0.8rem 1.4rem;
-			color: #222;
-			text-decoration: none;
-		}
-		#sidebar .nav a:hover {
-			background: #F5F5F5; /*#fff * 3.8*/
-		}
-		#sidebar .nav a:active {
-			background: #F0F0F0; /*#fff * 5.6*/
-		}
-		#sidebar .nav a.active {
-			/*background: #fcbd00;*/
-			background: #eee;
-			font-weight: bold;
-		}
-		#sidebar .nav a.active:hover {
-			/*background: #FFC107;*/
-			background: #E5E5E5;
-		}
-		#sidebar .nav a.active:active {
-			/*background: #f7b900;*/
-			background: #e0e0e0;
-		}
+#main #content {
+	/* sidebar-off as default */
+	margin-left: 0rem;
+
+	/* animational margin */
+	-webkit-transition: margin .25s ease-out;
+	-moz-transition: margin .25s ease-out;
+	-o-transition: margin .25s ease-out;
+	transition: margin .25s ease-out;
+
+	max-width: 100%;
+	padding: 0 2rem;
+
+	box-shadow: inset 0 0 5px 2px rgba(0,0,0,.2);
+}
+#main.sidebar-on #content {
+	margin-left: 17rem;
+}
+#main.sidebar-off #content {
+	margin-left: 0rem;
+}
 
 
-		#sidebar-wrapper {
-			min-height: 100vh;
-			margin-left: -17rem;
-			width: 17rem;
-			-webkit-transition: margin .25s ease-out;
-			-moz-transition: margin .25s ease-out;
-			-o-transition: margin .25s ease-out;
-			transition: margin .25s ease-out;
-			background: #FFF;
-			border-right: 1px solid #AAA;
-		}
+#main #content button {
+	margin-top: 3px;
+}
 
-		#sidebar {
-			position: sticky;
-			top: 0;
-			width: 17rem;
-			max-height: 100vh;
-			overflow-y: auto;
-			border-right: 1px solid #AAA;
-			padding: 2rem 0;
-		}
 
-		#sidebar .header {
-			font-weight: bold;
-			text-align: center;
-			font-size: 1.4em;
-			margin: 0;
-			margin-bottom: 1rem;
-			padding: 0;
-		}
 
-		#page-content {
-			padding: 0 2rem;
-			width 100vw;
-		}
 
-		#brand_on_xs {
-			display: inline-block;
-		}
-		@media (min-width: 768px) {
-			#sidebar-wrapper {
-				margin-left: 0;
-			}
 
-			#page-content-wrapper {
-				min-width: 0;
-				width: 100%;
-			}
+#sidebar .nav {
+	display: flex;
+	flex-direction: column;
+}
+#sidebar .nav a {
+	display: block;
+	padding: 0.8rem 2rem;
+	color: #222;
+	text-decoration: none;
+}
+#sidebar .nav a:hover {
+	background: #F5F5F5; /*#fff * 3.8*/
+}
+#sidebar .nav a:active {
+	background: #F0F0F0; /*#fff * 5.6*/
+}
+#sidebar .nav a.active {
+	/*background: #fcbd00;*/
+	background: #eee;
+	font-weight: bold;
+}
+#sidebar .nav a.active:hover {
+	/*background: #FFC107;*/
+	background: #E5E5E5;
+}
+#sidebar .nav a.active:active {
+	/*background: #f7b900;*/
+	background: #e0e0e0;
+}
 
-			#brand_on_xs {
-				display: none;
-			}
-		}
 
-	</style>
+
+/*
+	> larger screens
+*/
+@media screen and (min-width: 768px)
+{
+	#main #sidebar {
+		margin-left: 0;
+	}
+	#main #content {
+		margin-left: 17rem;
+	}
+}	</style>
 	<script src="topdown.min.js"></script>
 	<script>
 		window.onload = () => {
-			let smoothScroll = new SmoothScroll('a[href*="#"]', {
-				speed: 500,
-				speedAsDuration: true,
-				// easing: 'easeOutQuint'
-			});
-
 			let sidebarLinks = document.querySelectorAll('#sidebar .nav a');
 			let sidebarOffsets = [];
 			sidebarLinks.forEach(a => {
@@ -169,114 +235,135 @@
 			window.addEventListener('scroll', () => { whatsInRange(); });
 			whatsInRange();
 		}
+		
+		function toggleSidebar()
+		{
+			var main = document.querySelector('main#main'),
+				sidebar = document.querySelector('#sidebar'),
+				sidebarLeft = parseFloat(window.getComputedStyle(sidebar).marginLeft);
 
-
+			if( main.classList.contains('sidebar-off') || sidebarLeft < 0 )
+			{
+				// show it
+				main.classList.remove('sidebar-off');
+				main.classList.add('sidebar-on');
+			} else {
+				// hide it
+				main.classList.remove('sidebar-on');
+				main.classList.add('sidebar-off');
+			}
+		}
 	</script>
 </head>
 <body>
-<div class="d-flex" id="wrapper">
-	<div id="sidebar-wrapper">
-		<div id="sidebar">
-			<div class="header">
-				TopdownJS
-				<div style="text-align: center; margin-top: 5px; margin-bottom: 10px; font-size: 0.9rem; font-weight: normal;">
-					by <a href="http://muratalabacak.com" target="_blank" class=" font-weight-bold" style="color: #333; text-decoration: none !important"><span style="background-color:#D32F2F;color:#FFF;padding:0 4px">MA</span>Lab</a>
-				</div>
-			</div>
-			<div class="nav">
-				<a href="#usage">Usage</a>
-				<a href="#topdown-classes">1) Topdown classes</a>
-				<a href="#predefined-topdown-classes">1.1) Predefined topdowns</a>
-				<a href="#title-and-content">2) Title & Content</a>
-				<a href="#topdown-buttons">3) Buttons</a>
-				<a href="#events-states">4) Events / States</a>
-				<a href="#options-methods">5) Options & Methods</a>
-				<a href="https://github.com/alabacakmurat/topdownjs" target="_blank">Github</a>
-			</div>
-		</div>
-	</div>
-	<!-- /#sidebar-wrapper -->
-	<div id="page-content-wrapper">
 
-	<div id="page-content">
-
-		<!-- Sidebar -->
-		<h1 class="title" id="usage">
+<div id="navbar" class="container-fluid">
+	<nav id="logo">
+		<button class="btn btn-primary" type="button" onclick="return toggleSidebar()">
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.15em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1024 896"><path d="M27 130q-4-4-7-9t-4-10.5T15 98q0-19 12-31t31-12h913q19 0 31 12t12 31t-12 31.5t-31 12.5H58q-19 0-31-12zm975 285q12 12 12 31t-12 31t-31 12H58q-19 0-31-12q-2-2-4-5t-3.5-6t-2.5-6t-1.5-6.5t-.5-7.5q0-19 12-31t31-12h913q19 0 31 12zm0 347q12 12 12 31t-12 31.5t-31 12.5H58q-19 0-31-12q-2-2-3.5-4.5l-3-5l-2.5-5l-2-5.5l-1-5.5V793q0-19 12-31t31-12h913q18 0 31 12z" fill="white"/></svg>
+			<small class="ml-1 d-none d-sm-inline">
+				Navigation
+			</small>
+		</button>
+		<h4 class="logo-text mb-0">
 			TopdownJS
-			<div id="brand_on_xs" style="font-size: 0.9rem; font-weight: normal;">
+			<span style="font-size: 0.8rem; font-weight: normal;">
 				by <a href="http://muratalabacak.com" target="_blank" class=" font-weight-bold" style="color: #333; text-decoration: none !important"><span style="background-color:#D32F2F;color:#FFF;padding:0 4px">MA</span>Lab</a>
-			</div>
-		</h1>
-		<h4 class="title">
-			Usage
+			</span>
 		</h4>
-		<div class="ml-5">
-			<em class="badge badge-warning">Javascript</em>
-			<pre class="mb-0"><code class="language-javascript">$$topdown.display(CLASS, CONTENT, BUTTONS, CALLBACK);</code></pre>
+
+		<a href="" class="btn btn-dark" type="button" onclick="return toggleSidebar()">
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="0.79em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 1024"><path d="M47 523q-21 0-26-19q-12-36-17-80.5t-3.5-90t14-88.5T50 176q-7-28-7-57.5T50 60t20-48Q78-1 94 0q26 1 49.5 6.5T188 22t35 18t34 22q87-23 187-17q17 1 48 8q29 6 37 5.5T561 41q21-14 33-19q45-20 99-22q12 0 20 7.5t8.5 19t-7 19.5t-19.5 9q-44 1-79 17q-8 3-24 14q-36 25-58 27q-18 2-54-7q-28-6-39-7q-98-5-182 19q-12 3-22-4l-7-5q-25-16-38-24t-36.5-17T108 56q-10 24-10.5 58.5T106 173q8 18-7 31q-36 30-43 122.5T73 487q3 10-2 20.5T55 521q-4 2-8 2zm208 270l-6-1q-11-2-17.5-11.5T228 759l2-7q14-63 25-92q-84-17-144-56.5T22 508q-5-10-1.5-21T34 471t21-1.5T71 483q26 51 86 84.5T303 613q18 3 23 20q4 18-10 29q-13 12-33 101l-2 8q-2 10-9.5 16t-16.5 6zm-51 200q-2 0-5-1q-11-2-17.5-11t-4.5-20q5-26 34-43q9-5 10-8q7-14 4-75q-2-23-2-35q-33 5-63.5 6.5t-59-11T55 754q-7-11-16.5-34.5T23 688q-7-9-6-20t10-18.5t20-6t18 9.5q13 15 25 47q2 6 3.5 9.5T97 718t4 8q14 23 49 25.5t96-11.5q13-3 23.5 6.5T278 770q-1 16 1 62q3 75-9 101q-9 19-32 32q-7 5-8 5q-1 10-8.5 16.5T204 993zm398-5q-15 0-23-13q-2-3-11-9q-21-15-30-32q-11-22-12.5-57.5T527 807q3-61 0-86q-3-20-20-42q-14-19-20-30q-6-13 2-26q7-12 21-13q77-6 135.5-40.5T733 477q5-10 15.5-13.5t21 1.5t14 16t-1.5 21q-31 61-88.5 101.5T560 659q17 25 21 55t1 96q-4 80 5 99q2 3 4 5.5t8 6.5q17 11 26 24q6 10 3.5 21T617 983q-4 2-7.5 3.5T602 988zm155-471q-3 0-7-1q-11-3-16.5-13t-2.5-21q23-79 9.5-167T688 193q-14-12-8-30q8-29 4.5-63.5T669 38q-4-10 0-20.5t14.5-15t21-.5T719 16q14 31 19 69.5t-2 78.5q32 35 48 94t15.5 122T784 497q-7 19-27 20zm-245 507q-8 0-15-4q-20-13-48-56q-19-29-27-290q-1-8 2.5-14.5t10-10T448 645q11 0 19.5 8t8.5 19q7 228 20 264q22 34 30 38q10 6 12.5 17t-4.5 21q-7 12-22 12zm-208 0q-15 0-23-12q-6-10-3.5-21t11.5-17q9-4 31-38q12-34 19-264q1-11 9-19t19.5-7.5t19 8.5t7.5 20q-8 261-27 290q-28 43-48 56q-7 4-15 4z" fill="white"/></svg>
+			<small class="ml-1 d-none d-sm-inline">
+				Github
+			</small>
+		</a>
+	</nav>
+</div>
+<main id="main">
+	<section id="sidebar">
+		<div class="nav">
+			<a href="#usage">Usage</a>
+			<a href="#topdown-classes">1) Topdown classes</a>
+			<a href="#predefined-topdown-classes"><small class="pl-4">1.1) Predefined topdowns</small></a>
+			<a href="#title-and-content">2) Title & Content</a>
+			<a href="#topdown-buttons">3) Buttons</a>
+			<a href="#events-states">4) Events / States</a>
+			<a href="#options-methods">5) Options & Methods</a>
+			<a href="#download-links">Download</a>
 		</div>
+	</section>
+	<section id="content">
+		<h4 id="usage" class="title">
+	Usage
+</h4>
+<div class="ml-5">
+	<em class="badge badge-warning">Javascript</em>
+	<pre class="mb-0"><code class="language-javascript">$$topdown.display(CLASS, CONTENT, BUTTONS, CALLBACK);</code></pre>
+</div>
 
 
-		<h4 class="title mt-5" id="topdown-classes">
-			1) Topdown Classes
-		</h4>
-		<div class="ml-5">
-			<div class="mb-3">
-				Classes are just basic stylers for topdowns. We already have some useful styles for some specific classes (below). However, you can completely design your own class or override the predefined ones. In order to create a class, you should directly use it in the first argument and then, push the global topdown title for this class in case it's not given manually.
-			</div>
+<h4 class="title" id="topdown-classes">
+	1) Topdown Classes
+</h4>
+<div class="ml-5">
+	<div class="mb-3">
+		Classes are just basic stylers for topdowns. We already have some useful styles for some specific classes (below). However, you can completely design your own class or override the predefined ones. In order to create a class, you should directly use it in the first argument and then, push the global topdown title for this class in case it's not given manually.
+	</div>
 
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Hello');</code></pre>
-				<button onclick="$$topdown.display('custom-class', 'Hello')">Run code</button>
-			</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Hello');</code></pre>
+		<button onclick="$$topdown.display('custom-class', 'Hello')">Run code</button>
+	</div>
 
-			<div class="mb-3">
-				If you happen to run the code above, you'll notice the default style for undefined CSS classes is 'error'. Let's make it purple. You should notice I'm using the <code>#__topdown_container.force</code> class in order to override just to make sure everything will work as expected.
-			</div>
+	<div class="mb-3">
+		If you happen to run the code above, you'll notice the default style for undefined CSS classes is 'error'. Let's make it purple. You should notice I'm using the <code>#__topdown_container.force</code> class in order to override just to make sure everything will work as expected.
+	</div>
 
 
-			<div class="mb-3">
-				<em class="badge badge-danger">CSS</em>
-				<pre class="my-0"><code class="my-0 language-css">#__topdown_container.force.custom-class {
-	background: #F293F2;
-	border-color: #E05FE0;
-	box-shadow: 0 0 5px 2px rgba(255,0,255,0.2);
+	<div class="mb-3">
+		<em class="badge badge-danger">CSS</em>
+		<pre class="my-0"><code class="my-0 language-css">#__topdown_container.force.custom-class {
+background: #F293F2;
+border-color: #E05FE0;
+box-shadow: 0 0 5px 2px rgba(255,0,255,0.2);
 }</code></pre>
-				<button onclick="$$topdown.display('custom-class-styled', ['custom-class','Hello'])">Run code</button>
-				<style>
-					#__topdown_container.force.custom-class-styled {
-						/*background: #E586E5;*/
-						background: #F293F2;
-						border-color: #E05FE0;
-						box-shadow: 0 0 5px 2px rgba(255,0,255,0.2);
-					}
-				</style>
-			</div>
+		<button onclick="$$topdown.display('custom-class-styled', ['custom-class','Hello'])">Run code</button>
+		<style>
+			#__topdown_container.force.custom-class-styled {
+				/*background: #E586E5;*/
+				background: #F293F2;
+				border-color: #E05FE0;
+				box-shadow: 0 0 5px 2px rgba(255,0,255,0.2);
+			}
+		</style>
+	</div>
 
 
-			<div class="mb-3">
-				Let's define a global title for this topdown class.
-			</div>
+	<div class="mb-3">
+		Let's define a global title for this topdown class.
+	</div>
 
 
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'My Purple Class'})
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'My Purple Class'})
 
 $$topdown.display('custom-class', 'Hello')</code></pre>
-				<script>$$topdown.options('titles', {'custom-class-styled': 'My Purple Class'})</script>
-				<button onclick="$$topdown.display('custom-class-styled', 'Hello')">Run code</button>
-			</div>
+		<script>$$topdown.options('titles', {'custom-class-styled': 'My Purple Class'})</script>
+		<button onclick="$$topdown.display('custom-class-styled', 'Hello')">Run code</button>
+	</div>
 
 
-			<div class="mb-3">
-				Let's override the global title!
-			</div>
+	<div class="mb-3">
+		Let's override the global title!
+	</div>
 
 
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'My Purple Class'})
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'My Purple Class'})
 
 // Method 1
 $$topdown.display('custom-class', ['Title Overridden', 'Hello'])
@@ -284,193 +371,193 @@ $$topdown.display('custom-class', ['Title Overridden', 'Hello'])
 // Method 2
 $$topdown.display('custom-class', {'title': 'Title Overridden', 'content': 'Hello'})
 </code></pre>
-				<script>$$topdown.options('titles', {'custom-class-styled': 'My Purple Class'})</script>
-				<button onclick="$$topdown.display('custom-class-styled', ['Title Overridden', 'Hello'])">Run code</button>
-			</div>
+		<script>$$topdown.options('titles', {'custom-class-styled': 'My Purple Class'})</script>
+		<button onclick="$$topdown.display('custom-class-styled', ['Title Overridden', 'Hello'])">Run code</button>
+	</div>
 
 
-			<p>
-				Voila! We did it. Time to shine, baby...
-			</p>
+	<p>
+		Voila! We did it. Time to shine, baby...
+	</p>
 
 
-			<p class="alert alert-info">
-				However, don't forget we can override global titles. Check the <strong>Topdown Titles</strong> section.
-			</p>
-		</div>
-
-
-
-		<!-- SECTION -->
-		<div class="ml-5">
-			<h4 class="title mt-5" id="predefined-topdown-classes">
-				1.A) Predefined Topdown Classes
-			</h4>
-			<div class="ml-5">
-				<h5>1) Error Topdown</h5>
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('error');</code></pre>
-				<button onclick="$$topdown.display('error')">Run code</button>
-
-				<h5 class="mt-3">2) Warning Topdown</h5>
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('warning');</code></pre>
-				<button onclick="$$topdown.display('warning')">Run code</button>
-
-				<h5 class="mt-3">3) Info Topdown</h5>
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('info');</code></pre>
-				<button onclick="$$topdown.display('info')">Run code</button>
-
-				<h5 class="mt-3">4) Success Topdown</h5>
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('success');</code></pre>
-				<button onclick="$$topdown.display('success')">Run code</button>
-			</div>
-		</div>
+	<p class="alert alert-info">
+		However, don't forget we can override global titles. Check the <strong>Topdown Titles</strong> section.
+	</p>
+</div>
 
 
 
-		<!-- SECTION -->
-		<h4 class="title mt-5" id="title-and-content">
-			2) Title & Content
-		</h4>
-		<div class="ml-5">
-			<div class="mb-3">
-				Using TopdownJS, we suggest you to set a global title, a fallback for every topdown call if these calls have no specific title definitions. You can do this by following:
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'This is a global title'})
+<!-- SECTION -->
+<div class="ml-5">
+	<h4 class="title" id="predefined-topdown-classes">
+		1.A) Predefined Topdown Classes
+	</h4>
+	<div class="ml-5">
+		<h5>1) Error Topdown</h5>
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('error');</code></pre>
+		<button onclick="$$topdown.display('error')">Run code</button>
+
+		<h5 class="mt-3">2) Warning Topdown</h5>
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('warning');</code></pre>
+		<button onclick="$$topdown.display('warning')">Run code</button>
+
+		<h5 class="mt-3">3) Info Topdown</h5>
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('info');</code></pre>
+		<button onclick="$$topdown.display('info')">Run code</button>
+
+		<h5 class="mt-3">4) Success Topdown</h5>
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('success');</code></pre>
+		<button onclick="$$topdown.display('success')">Run code</button>
+	</div>
+</div>
+
+
+
+<!-- SECTION -->
+<h4 class="title" id="title-and-content">
+	2) Title & Content
+</h4>
+<div class="ml-5">
+	<div class="mb-3">
+		Using TopdownJS, we suggest you to set a global title, a fallback for every topdown call if these calls have no specific title definitions. You can do this by following:
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'This is a global title'})
 
 $$topdown.display('custom-class', 'Just the content under the global title')</code></pre>
-				<script>$$topdown.options('titles', {'custom-class-styled': 'This is a global title'});</script>
-				<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title')">Run code</button>
-			</div>
-			<div class="mb-3">
-				However, you can use call-specific titles to override the global title. It is just for a fallback when no title is defined on the call.
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'This is a global title'})
+		<script>$$topdown.options('titles', {'custom-class-styled': 'This is a global title'});</script>
+		<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title')">Run code</button>
+	</div>
+	<div class="mb-3">
+		However, you can use call-specific titles to override the global title. It is just for a fallback when no title is defined on the call.
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('titles', {'custom-class': 'This is a global title'})
 
 // Method 1:  (array) [TITLE, CONTENT]
 $$topdown.display('custom-class', ['Call-specific Title', 'We did it again!'])
 
 // Method 2:  (object) {'title': TITLE: CONTENT}
 $$topdown.display('custom-class', {'title': 'My Own Title', 'content': 'My own content'})</code></pre>
-				<script>$$topdown.options('titles', {'custom-class-styled': 'This is a global title'});</script>
-				<button onclick="$$topdown.display('custom-class-styled', ['Call-specific Title', 'We did it again!'])">Run code &mdash; Method 1</button>
-				<button class="ml-3" onclick="$$topdown.display('custom-class-styled', {'title': 'My Own Title', 'content': 'My own content'})">Run code &mdash; Method 2</button>
-			</div>
-		</div>
+		<script>$$topdown.options('titles', {'custom-class-styled': 'This is a global title'});</script>
+		<button onclick="$$topdown.display('custom-class-styled', ['Call-specific Title', 'We did it again!'])">Run code &mdash; Method 1</button>
+		<button class="ml-3" onclick="$$topdown.display('custom-class-styled', {'title': 'My Own Title', 'content': 'My own content'})">Run code &mdash; Method 2</button>
+	</div>
+</div>
 
 
-		<!-- SECTION -->
-		<h4 class="title mt-5" id="topdown-buttons">
-			3) Buttons
-		</h4>
-		<div class="ml-5">
-			<div class="mb-3">
-				Buttons have almost the same logic with titles. You can create global buttons or call-specific buttons. Buttons take the 3<sup>rd</sup> argument.  
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', 'dismiss')</code></pre>
-				<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', ['dismiss'])">Run code</button>
-			</div>
-			<div class="mb-3">
-				Let's change the default dismiss button (with bootstrap styles)
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('buttons', {'dismiss': '&lt;button class="btn btn-danger btn-sm" topdown:dismiss>Close&lt;/button>'})
+<!-- SECTION -->
+<h4 class="title" id="topdown-buttons">
+	3) Buttons
+</h4>
+<div class="ml-5">
+	<div class="mb-3">
+		Buttons have almost the same logic with titles. You can create global buttons or call-specific buttons. Buttons take the 3<sup>rd</sup> argument.  
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', 'dismiss')</code></pre>
+		<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', ['dismiss'])">Run code</button>
+	</div>
+	<div class="mb-3">
+		Let's change the default dismiss button (with bootstrap styles)
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('buttons', {'dismiss': '&lt;button class="btn btn-danger btn-sm" topdown:dismiss>Close&lt;/button>'})
 $$topdown.display('custom-class', 'Just the content under the global title', 'dismiss')</code></pre>
-				<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>')">Run code</button>
+		<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>')">Run code</button>
 
-				<div class="alert alert-warning mt-1">
-					Did you notice <code class="badge badge-danger">topdown:dismiss</code> attribute when defining our global button for 'dismiss' key? It helps dismiss the topdown.
-				</div>
-			</div>
-			<div class="mb-3">
-				And set it for fallback buttons (if no button is given during the call-specific topdown, this will be used)
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('fallbackButtons', ['dismiss'])
+		<div class="alert alert-warning mt-1">
+			Did you notice <code class="badge badge-danger">topdown:dismiss</code> attribute when defining our global button for 'dismiss' key? It helps dismiss the topdown.
+		</div>
+	</div>
+	<div class="mb-3">
+		And set it for fallback buttons (if no button is given during the call-specific topdown, this will be used)
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('fallbackButtons', ['dismiss'])
 
 // I didn't set the dismiss button yet it will show up
 $$topdown.display('custom-class', 'Just the content under the global title')</code></pre>
-				<button onclick="$$topdown.options('fallbackButtons', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>']);$$topdown.display('custom-class-styled', 'Just the content under the global title with a fallback button')">Run code</button>
-			</div>
-			<div class="mb-3">
-				Time to add more buttons. Let's define a custom predefined button with the name of <code>custom-name</code>.
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.options('buttons', {
-	// we could define it by html as well
-	'custom-button': {
-		'text': 'Custom',
-		'onclick': () => {
-			alert('Clicked to the custom button!')
-			$$topdown.dismiss()
-		},
-		'className': 'btn btn-info btn-sm'
-	}
+		<button onclick="$$topdown.options('fallbackButtons', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>']);$$topdown.display('custom-class-styled', 'Just the content under the global title with a fallback button')">Run code</button>
+	</div>
+	<div class="mb-3">
+		Time to add more buttons. Let's define a custom predefined button with the name of <code>custom-name</code>.
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.options('buttons', {
+    // we could define it by html as well [only 3 properties allowed (text, onclick, className)]
+    'custom-button': {
+        'text': 'Custom',
+        'onclick': () => {
+	        alert('Clicked to the custom button!')
+	        $$topdown.dismiss()
+        },
+        'className': 'btn btn-info btn-sm'
+    }
 })</code></pre>
-				<script>
-					$$topdown.options('buttons', {
-						// we could define it by html as well
-						'custom-button': {
-							'text': 'Custom',
-							'onclick': () => {
-								alert('Clicked to the custom button!')
-								$$topdown.dismiss()
-							},
-							'className': 'btn btn-info btn-sm'
-						}
-					})
-				</script>
-		</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', [
-	// first button as html
-	'&lt;a href="http://google.com" target="_blank" class="btn btn-primary btn-sm">Google&lt;/a>',
-	// second one as object
-	{
-		'text': 'Special one',
-		'onclick': () => {
-			alert('Clicked to the special one!')
-		},
-		'className': 'btn btn-success btn-sm'
-	},
+		<script>
+			$$topdown.options('buttons', {
+				// we could define it by html as well
+				'custom-button': {
+					'text': 'Custom',
+					'onclick': () => {
+						alert('Clicked to the custom button!')
+						$$topdown.dismiss()
+					},
+					'className': 'btn btn-info btn-sm'
+				}
+			})
+		</script>
+</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', [
+    // first button as html
+    '&lt;a href="http://google.com" target="_blank" class="btn btn-primary btn-sm">Google&lt;/a>',
+    // second one as object
+    {
+        'text': 'Special one',
+        'onclick': () => {
+	        alert('Clicked to the special one!')
+        },
+        'className': 'btn btn-success btn-sm'
+    },
 
-	// third one is a CUSTOMN predefined/global button
-	'custom-button',
+    // third one is a CUSTOMN predefined/global button
+    'custom-button',
 
-	// fourth one is a predefined default button
-	'dismiss',
+    // fourth one is a predefined default button
+    'dismiss',
 ])</code></pre>
-				<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', ['<a href=\'http://google.com\' target=\'_blank\' class=\'btn btn-primary btn-sm\'>Google</a>', {'text':'Special one', 'onclick':()=>{alert('Clicked to the special one!');}, 'className': 'btn btn-success btn-sm'}, 'custom-button', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>'])">Run code</button>
-			</div>
-		</div>
+		<button onclick="$$topdown.display('custom-class-styled', 'Just the content under the global title', ['<a href=\'http://google.com\' target=\'_blank\' class=\'btn btn-primary btn-sm\'>Google</a>', {'text':'Special one', 'onclick':()=>{alert('Clicked to the special one!');}, 'className': 'btn btn-success btn-sm'}, 'custom-button', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>'])">Run code</button>
+	</div>
+</div>
 
 
 
 
-		<!-- SECTION -->
-		<h4 class="title mt-5" id="events-states">
-			4) Events / States
-		</h4>
-		<div class="ml-5">
-			<div class="mb-3">
-				As you're used to the 'global and call-specific' difference, we have it here to with one little difference. Global states are not overridden by call-specific states. They're called alongside with the call-specific states. There are two states for every single topdown. 
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', 'dismiss', {
+<!-- SECTION -->
+<h4 class="title" id="events-states">
+	4) Events / States
+</h4>
+<div class="ml-5">
+	<div class="mb-3">
+		As you're used to the 'global and call-specific' difference, we have it here to with one little difference. Global states are not overridden by call-specific states. They're called alongside with the call-specific states. There are two states for every single topdown. 
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">$$topdown.display('custom-class', 'Just the content under the global title', 'dismiss', {
 	'shown': () => {
 		alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
 	},
@@ -478,157 +565,196 @@ $$topdown.display('custom-class', 'Just the content under the global title')</co
 		alert('This will fire when this topdown becomes hidden, after the animation is completed.')
 	},
 })</code></pre>
-				<button onclick="state1()">Run code</button>
-				<script>
-					function state1()
-					{
-						$$topdown.display('custom-class-styled', 'Just the content under the global title', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>', {
-							'shown': () => {
-								alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
-							},
-							'hidden': () => {
-								alert('This will fire when this topdown becomes hidden, after the animation is completed.')
-							},
-						})
-					}
-				</script>
-			</div>
-			<div class="mb-3">
-				Now let's what we did above with global callbacks/states as well.
-			</div>
-			<div class="mb-3">
-				<em class="badge badge-warning">Javascript</em>
-				<pre class="mb-0"><code class="language-javascript">// Method 1 - using .when()
+		<button onclick="state1()">Run code</button>
+		<script>
+			function state1()
+			{
+				$$topdown.display('custom-class-styled', 'Just the content under the global title', '<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>', {
+					'shown': () => {
+						alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
+					},
+					'hidden': () => {
+						alert('This will fire when this topdown becomes hidden, after the animation is completed.')
+					},
+				})
+			}
+		</script>
+	</div>
+	<div class="mb-3">
+		Now let's what we did above with global callbacks/states as well.
+	</div>
+	<div class="mb-3">
+		<em class="badge badge-warning">Javascript</em>
+		<pre class="mb-0"><code class="language-javascript">// Method 1 - using .when()
 $$topdown.when('shown', () => {
-	alert('[GLOBAL - shown]\nThis will fire after the call-specific state, but it will still be called!')
+    alert('[GLOBAL - shown]\nThis will fire after the call-specific state, but it will still be called!')
 })
 
 // Method 2 - using .options()
 $$topdown.options('states', {
-	'hidden': () => {
-		alert('[GLOBAL - hidden]\nThis will fire after the call-specific state, but it will still be called!')
-	}
+    'hidden': () => {
+        alert('[GLOBAL - hidden]\nThis will fire after the call-specific state, but it will still be called!')
+    }
 })
 
 // Let's display our topdown
 $$topdown.display('custom-class', 'Just the content under the global title', 'dismiss', {
-	'shown': () => {
-		alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
-	},
-	'hidden': () => {
-		alert('This will fire when this topdown becomes hidden, after the animation is completed.')
-	},
+    'shown': () => {
+        alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
+    },
+    'hidden': () => {
+        alert('This will fire when this topdown becomes hidden, after the animation is completed.')
+    },
 })</code></pre>
-				<button onclick="state2()">Run code</button>
-				<script>
-					function state2()
-					{
-						$$topdown.when('shown', () => {
-							alert('[GLOBAL - shown]\nThis will fire after the call-specific state, but it will still be called!')
+		<button onclick="state2()">Run code</button>
+		<script>
+			function state2()
+			{
+				$$topdown.when('shown', () => {
+					alert('[GLOBAL - shown]\nThis will fire after the call-specific state, but it will still be called!')
 
-							$$topdown.when('shown', null)
-						});
+					$$topdown.when('shown', null)
+				});
 
-						// Method 2 - using .options()
-						$$topdown.options('states', {
-							'hidden': () => {
-								alert('[GLOBAL - hidden]\nThis will fire after the call-specific state, but it will still be called!')
+				// Method 2 - using .options()
+				$$topdown.options('states', {
+					'hidden': () => {
+						alert('[GLOBAL - hidden]\nThis will fire after the call-specific state, but it will still be called!')
 
-								$$topdown.when('hidden', '')
-							}
-						});
-
-						$$topdown.display('custom-class-styled', 'Just the content under the global title', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>'], {
-							'shown': () => {
-								alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
-							},
-							'hidden': () => {
-								alert('This will fire when this topdown becomes hidden, after the animation is completed.')
-							},
-						})
+						$$topdown.when('hidden', '')
 					}
-				</script>
-			</div>
-		</div>
+				});
+
+				$$topdown.display('custom-class-styled', 'Just the content under the global title', ['<button class=\'btn btn-danger btn-sm\' topdown:dismiss>Close</button>'], {
+					'shown': () => {
+						alert('This will fire when this topdown becomes visible, at the beginning of the animation.')
+					},
+					'hidden': () => {
+						alert('This will fire when this topdown becomes hidden, after the animation is completed.')
+					},
+				})
+			}
+		</script>
+	</div>
+</div>
 
 
 
 
 
-		<!-- SECTION -->
-		<h4 class="title mt-5" id="options-methods">
-			5) Options & Methods
+<!-- SECTION -->
+<h4 class="title" id="options-methods">
+	5) Options & Methods
+</h4>
+<div class="ml-5">
+	<div class="mb-3">
+		We have some other options and methods as well
+	</div>
+
+	<div class="ml-5">
+		<h4 class="title">
+			5.A) dismiss(callback) <small class="text-muted">or <em>hide(callback)</em></small>
 		</h4>
 		<div class="ml-5">
 			<div class="mb-3">
-				We have some other options and methods as well
+				Dismisses / closes the current topdown.
 			</div>
+			<div class="mb-3">
+				<pre class="mb-0"><code class="language-javascript">$$topdown.dismiss()</code></pre>
+			</div>	
+		</div>			
+	</div>
 
-			<div class="ml-5">
-				<h4 class="title mt-5">
-					5.A) dismiss(callback) <small class="text-muted">or <em>hide(callback)</em></small>
-				</h4>
-				<div class="ml-5">
-					<div class="mb-3">
-						Dismisses / closes the current topdown.
-					</div>
-					<div class="mb-3">
-						<pre class="mb-0"><code class="language-javascript">$$topdown.dismiss()</code></pre>
-					</div>	
-				</div>			
+	<div class="ml-5">
+		<h4 class="title">
+			5.B) show(callback) 
+		</h4>
+		<div class="ml-5">
+			<div class="mb-3">
+				Shows the last topdown.
 			</div>
+			<div class="mb-3">
+				<pre class="mb-0"><code class="language-javascript">$$topdown.show()</code></pre>
+			</div>	
+		</div>			
+	</div>
 
-			<div class="ml-5">
-				<h4 class="title mt-5">
-					5.B) show(callback) 
-				</h4>
-				<div class="ml-5">
-					<div class="mb-3">
-						Shows the last topdown.
-					</div>
-					<div class="mb-3">
-						<pre class="mb-0"><code class="language-javascript">$$topdown.show()</code></pre>
-					</div>	
-				</div>			
+	<div class="ml-5">
+		<h4 class="title">
+			5.C) when(state, callback) 
+		</h4>
+		<div class="ml-5">
+			<div class="mb-3">
+				Sets a global state. Here are the states: <code>shown</code> and <code>hidden</code>
 			</div>
+			<div class="mb-3">
+				<pre class="mb-0"><code class="language-javascript">$$topdown.when('shown', () => {})</code></pre>
+				<pre class="mb-0"><code class="language-javascript">$$topdown.when('hidden', () => {})</code></pre>
+			</div>	
+		</div>			
+	</div>
 
-			<div class="ml-5">
-				<h4 class="title mt-5">
-					5.C) when(state, callback) 
-				</h4>
-				<div class="ml-5">
-					<div class="mb-3">
-						Sets a global state. Here are the states: <code>shown</code> and <code>hidden</code>
-					</div>
-					<div class="mb-3">
-						<pre class="mb-0"><code class="language-javascript">$$topdown.when('shown', () => {})</code></pre>
-						<pre class="mb-0"><code class="language-javascript">$$topdown.when('hidden', () => {})</code></pre>
-					</div>	
-				</div>			
+	<div class="ml-5">
+		<h4 class="title">
+			5.D) options(option, value) <small class="text-muted">or <em>options({option: value})</em></small>
+		</h4>
+		<div class="ml-5">
+			<div class="mb-3">
+				Sets a global state. Here are the states: <code>shown</code> and <code>hidden</code>
 			</div>
-
-			<div class="ml-5">
-				<h4 class="title mt-5">
-					5.D) options(option, value) <small class="text-muted">or <em>options({option: value})</em></small>
-				</h4>
-				<div class="ml-5">
-					<div class="mb-3">
-						Sets a global state. Here are the states: <code>shown</code> and <code>hidden</code>
-					</div>
-					<div class="mb-3">
-						<pre class="mb-0"><code class="language-javascript">$$topdown.option('buttons', {'custom-button': '&lt;button>My button&lt;/button>'})</code></pre>
-						<pre class="mb-0"><code class="language-javascript">$$topdown.option('states', {'shown': () => { alert('Global shown state') }})</code></pre>
-						<pre class="mb-0"><code class="language-javascript">// How many pixels will be removed/added during the animation loop until the topdown becomes visible/hidden?
+			<div class="mb-3">
+				<pre class="mb-0"><code class="language-javascript">$$topdown.option('buttons', {'custom-button': '&lt;button>My button&lt;/button>'})</code></pre>
+				<pre class="mb-0"><code class="language-javascript">$$topdown.option('states', {'shown': () => { alert('Global shown state') }})</code></pre>
+				<pre class="mb-0"><code class="language-javascript">// How many pixels will be removed/added during the animation loop until the topdown becomes visible/hidden?
 $$topdown.option('pixels', 10)</code></pre>
-					</div>	
-				</div>			
-			</div> 
-		</div>
-		<!-- /SECTION -->
-
-		</div>
-	</div> <!-- /.box-container -->
+			</div>	
+		</div>			
+	</div> 
 </div>
+<!-- /SECTION -->
+
+
+
+
+
+<!-- SECTION -->
+<div class="min-vh-100">
+	<h4 class="title" id="download-links">
+		Download
+	</h4>
+	<div class="ml-5 mb-5">
+		<div class="mb-3">
+			You can download the latest source files here.
+		</div>
+		<div class="mb-5 text-center">
+			<div class="btn-group">
+				<a href="#" target="_blank" class="btn btn-warning btn-lg px-lg-5 py-lg-3">
+					<strong class="d-block">Uncompressed</strong>
+					<small class="d-block">topdown.js</small>
+				</a>
+				<a href="#" target="_blank" class="btn btn-dark btn-lg px-5 py-3">
+					<strong class="d-block">Minified</strong>
+					<small class="d-block">topdown.min.js</small>
+				</a>
+			</div>
+		</div>
+		<div class="mb-3">
+			In order to implement TopdownJS in your website, you need to include the source file directly.
+		</div>
+		<div class="mb-3">
+			<pre><code class="lang-html">&lt;script type="text/javascript" src="/path/to/topdown.min.js">&lt;/script></code></pre>
+		</div>
+		<div class="mb-3">
+			And you are good to go!
+		</div>
+		<div class="mb-3">
+			<pre><code class="lang-html">&lt;button onclick="$$topdown.display('error')">
+	Show me an error
+&lt;/button></code></pre>
+		</div>
+	</div>
+</div>	</section>
+</main>
 
 </body>
 </html>
