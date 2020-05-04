@@ -1,5 +1,5 @@
 /**
- * TopdownJS is a product of [MA]Lab <muratalabacak.com
+ * TopdownJS is a product of [MA]Lab <muratalabacak.com>
  * 	v0.6
  * 
  * You can find the full documentation here:

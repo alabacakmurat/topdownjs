@@ -192,7 +192,7 @@ body {
 		margin-left: 17rem;
 	}
 }	</style>
-	<script src="topdown.min.js"></script>
+	<script src="topdown.compatible.js"></script>
 	<script>
 		window.onload = () => {
 			let sidebarLinks = document.querySelectorAll('#sidebar .nav a');
@@ -723,18 +723,28 @@ $$topdown.option('pixels', 10)</code></pre>
 	</h4>
 	<div class="ml-5 mb-5">
 		<div class="mb-3">
-			You can download the latest source files here.
+			You can download the latest source files here. Compatible script file has old-browser support because TopdownJS uses EcmaScript6+ instead of pure Javascript.
 		</div>
 		<div class="mb-5 text-center">
-			<div class="btn-group">
-				<a href="https://raw.githubusercontent.com/alabacakmurat/topdownjs/master/topdown.js" target="_blank" class="btn btn-warning btn-lg px-lg-5 py-lg-3">
-					<strong class="d-block">Uncompressed</strong>
-					<small class="d-block">topdown.js</small>
-				</a>
-				<a href="https://raw.githubusercontent.com/alabacakmurat/topdownjs/master/topdown.min.js" target="_blank" class="btn btn-dark btn-lg px-5 py-3">
-					<strong class="d-block">Minified</strong>
-					<small class="d-block">topdown.min.js</small>
-				</a>
+			<div class="row">
+				<div class="col-sm-6 col-md-4 mb-2 text-center">
+					<a href="https://raw.githubusercontent.com/alabacakmurat/topdownjs/master/topdown.js" target="_blank" class="btn btn-warning btn-lg px-lg-5 py-lg-3 d-block w-100">
+						<strong class="d-block">Uncompressed</strong>
+						<small class="d-block">topdown.js</small>
+					</a>
+				</div>
+				<div class="col-sm-6 col-md-4 mb-2 text-center">
+					<a href="https://raw.githubusercontent.com/alabacakmurat/topdownjs/master/topdown.min.js" target="_blank" class="btn btn-dark btn-lg px-lg-5 py-lg-3 d-block w-100">
+						<strong class="d-block">Minified</strong>
+						<small class="d-block">topdown.min.js</small>
+					</a>
+				</div>
+				<div class="col-sm-12 col-md-4 mb-2 text-center">
+					<a href="https://raw.githubusercontent.com/alabacakmurat/topdownjs/master/topdown.compatible.js" target="_blank" class="btn btn-info border btn-lg px-lg-5 py-lg-3 d-block w-100">
+						<strong class="d-block">Compatible</strong>
+						<small class="d-block">topdown.compatible.js</small>
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="mb-3">
